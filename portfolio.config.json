@@ -1,0 +1,15 @@
+{
+  "topics": ["portfolio"],
+  "include_forks": false,
+  "include_archived": false,
+  "template": "default",
+  "llm": {
+    "provider": "ollama",
+    "model": "llama3.2",
+    "base_url": "http://localhost:11434/v1",
+    "prompt_file": "prompts/project-extraction.md"
+  },
+  "github": {
+    "draft_branch": "portfolio-drafts"
+  }
+}

@@ -1,0 +1,38 @@
+name: Sync portfolio drafts
+on:
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+  push:
+    paths: ["portfolio.config.json"]
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run sync
+        env:
+          PORTFOLIO_GITHUB_TOKEN: ${{ secrets.PORTFOLIO_GITHUB_TOKEN }}
+          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OLLAMA_BASE_URL: ${{ secrets.OLLAMA_BASE_URL }}
+      - name: Commit and open draft PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet -- data/projects.json data/drafts; then exit 0; fi
+          branch="$(node -e "const c=require('./portfolio.config.json'); console.log(c.github?.draft_branch || 'portfolio-drafts')")"
+          git config user.name "portfolio-sync[bot]"
+          git config user.email "portfolio-sync[bot]@users.noreply.github.com"
+          git checkout -B "$branch"
+          git add data/projects.json data/drafts
+          git commit -m "chore: sync portfolio drafts"
+          git push --force-with-lease origin "HEAD:$branch"
+          gh pr list --head "$branch" --state open --json number --jq '.[0].number' | grep -q . || gh pr create --base "${{ github.ref_name }}" --head "$branch" --title "Portfolio draft: sync" --body "Review generated drafts before approval."
