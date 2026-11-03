@@ -1,5 +1,162 @@
-# Self-hosted portfolio
+# Smart Portfolio Maker
 
-This portfolio discovers only GitHub repositories tagged `portfolio`, drafts entries with a configured LLM, and requires human review before anything appears in `data/projects.json`.
+Smart Portfolio Maker is an open-source, self-hosted developer portfolio that turns
+opt-in GitHub repositories into reviewable project drafts. It uses GitHub Actions for
+automation, structured LLM output for writing assistance, and static JSON for a fast,
+private-by-default public site.
 
-Set `PORTFOLIO_GITHUB_TOKEN` locally or in GitHub Actions, configure `portfolio.config.json`, then run `npm run sync`. The static site is built with `npm run build`.
+> **Human approval is required.** A repository is never published just because it has
+> the `portfolio` topic. New entries are written to `data/drafts/` first.
+
+## What it does
+
+- Scans only repositories tagged with a configured topic (default: `portfolio`).
+- Excludes forks and archived repositories by default.
+- Reads README content, languages, topics, homepage, license, and latest commit.
+- Detects stack information from `package.json`, `pyproject.toml`, and `go.mod`.
+- Removes common secrets before README content is sent to an LLM.
+- Supports Gemini, OpenAI, and Ollama-compatible providers through configuration.
+- Validates LLM responses with Zod.
+- Creates draft files and opens a review pull request.
+- Renders only approved entries from `data/projects.json`.
+- Deploys the static Next.js site to GitHub Pages.
+
+## Quick start
+
+### 1. Install
+
+Requirements:
+
+- Node.js 22+
+- npm
+- A GitHub repository for this portfolio
+- A fine-grained GitHub token with access to read the repositories being scanned
+
+```bash
+npm ci
+cp .env.example .env
+```
+
+On Windows PowerShell, copy the environment template with:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Set `PORTFOLIO_GITHUB_TOKEN` in `.env`. Never commit `.env`; it is ignored by Git.
+
+### 2. Configure
+
+Edit [`portfolio.config.json`](./portfolio.config.json):
+
+```json
+{
+  "topics": ["portfolio"],
+  "include_forks": false,
+  "include_archived": false,
+  "template": "default",
+  "llm": {
+    "provider": "ollama",
+    "model": "llama3.2",
+    "base_url": "http://localhost:11434/v1",
+    "prompt_file": "prompts/project-extraction.md"
+  },
+  "github": {
+    "draft_branch": "portfolio-drafts"
+  }
+}
+```
+
+Supported providers:
+
+| Provider | Required environment/configuration |
+| --- | --- |
+| `ollama` | `base_url` or `OLLAMA_BASE_URL`, plus a reachable Ollama model |
+| `gemini` | `GOOGLE_GENERATIVE_AI_API_KEY` and a Gemini model |
+| `openai` | `OPENAI_API_KEY` and an OpenAI model |
+
+For GitHub Actions, add the provider credentials and
+`PORTFOLIO_GITHUB_TOKEN` as repository secrets. Ollama must be reachable from the
+runner; a laptop-only `localhost` endpoint will not work on a GitHub-hosted runner.
+
+### 3. Generate drafts
+
+Tag a repository with `portfolio`, then run:
+
+```bash
+npm run sync
+```
+
+The sync is designed to be idempotent: unchanged source commits do not regenerate
+drafts or create a diff.
+
+### 4. Review and approve
+
+The sync workflow commits changes to the configured draft branch and opens a pull
+request. Review the generated files in `data/drafts/`.
+
+The static `/admin` page provides GitHub edit and delete links. Because GitHub Pages
+is static, it does not hold a write token and cannot mutate the repository directly.
+To approve an entry, review the draft, copy the validated content into
+`data/projects.json`, remove the draft, and merge the pull request. Only entries in
+`data/projects.json` are displayed publicly.
+
+## Local development
+
+```bash
+npm run dev       # Start the Next.js development server
+npm run test      # Run Vitest tests
+npm run typecheck # Run TypeScript checks
+npm run lint      # Run ESLint
+npm run build     # Build the static export in out/
+```
+
+Open `http://localhost:3000` for the portfolio and
+`http://localhost:3000/admin` for draft review.
+
+Set `NEXT_PUBLIC_REPOSITORY=owner/repository` in `.env` to enable the admin page's
+GitHub links.
+
+## GitHub Actions
+
+- [`sync.yml`](./.github/workflows/sync.yml) runs daily, manually, or when
+  `portfolio.config.json` changes. It creates a draft branch and pull request.
+- [`deploy.yml`](./.github/workflows/deploy.yml) builds the static export and deploys
+  it to GitHub Pages.
+
+Enable GitHub Pages with **GitHub Actions** as the deployment source. The workflows
+use least-privilege job permissions for their respective tasks.
+
+## Project structure
+
+```text
+app/                 Next.js pages, including the static draft review page
+components/          Portfolio and draft UI
+data/projects.json   Approved public projects
+data/drafts/         Generated, unapproved drafts
+prompts/             Editable LLM extraction prompt
+scripts/             GitHub sync, filtering, sanitization, extraction, and schemas
+tests/               Filtering, parsing, sanitization, extraction, and idempotency tests
+```
+
+## Security and privacy
+
+- Use a fine-grained token rather than a classic broad OAuth token.
+- Store credentials only in `.env` locally or GitHub Actions secrets.
+- README text is sanitized before it reaches the LLM, but sanitization is heuristic;
+  do not place secrets in public READMEs.
+- The public site contains only committed `data/projects.json` content.
+- No database or third-party SaaS is required.
+
+## Known limitations
+
+- Approval is a human GitHub workflow, not an in-browser mutation.
+- A GitHub-hosted runner cannot access a local Ollama server without a reachable
+  network endpoint or self-hosted runner.
+- The first version ships one default visual template; the config field is reserved
+  for future template plugins.
+
+## License
+
+This project is intended to be open source. Add the repository's chosen license file
+before publishing a release.
