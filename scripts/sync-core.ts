@@ -1,6 +1,11 @@
 import { writeFile, readFile } from "node:fs/promises";
 import type { Draft, Extraction } from "./schema";
 
+export function truncateToTokens(input: string, maxTokens: number): string {
+  const tokens = input.split(/\s+/).filter(Boolean);
+  return tokens.length <= maxTokens ? input : `${tokens.slice(0, maxTokens).join(" ")}\n\n[README truncated at ${maxTokens} tokens]`;
+}
+
 export async function writeDraftIfChanged(file: string, draft: Draft): Promise<boolean> {
   const serialized = `${JSON.stringify(draft, null, 2)}\n`;
   try {

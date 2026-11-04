@@ -46,6 +46,8 @@ export const PortfolioConfigSchema = z.object({
   include_forks: z.boolean().default(false),
   include_archived: z.boolean().default(false),
   template: text.default("default"),
+  readme_max_tokens: z.number().int().positive().default(8000),
+  output_language: text.optional(),
   llm: z.object({
     provider: z.enum(["gemini", "ollama", "openai"]),
     model: text,

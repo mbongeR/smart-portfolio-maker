@@ -1,13 +1,16 @@
 name: Sync portfolio drafts
+
 on:
   schedule:
     - cron: "17 2 * * *"
   workflow_dispatch:
   push:
     paths: ["portfolio.config.json"]
+
 permissions:
   contents: write
   pull-requests: write
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -17,22 +20,60 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm }
       - run: npm ci
-      - run: npm run sync
+      - name: Generate drafts and cleanup records
+        run: npm run sync > sync-result.json
         env:
           PORTFOLIO_GITHUB_TOKEN: ${{ secrets.PORTFOLIO_GITHUB_TOKEN }}
           GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OLLAMA_BASE_URL: ${{ secrets.OLLAMA_BASE_URL }}
-      - name: Commit and open draft PR
+      - name: Create or update one approval PR per draft
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
         run: |
-          if git diff --quiet -- data/projects.json data/drafts; then exit 0; fi
-          branch="$(node -e "const c=require('./portfolio.config.json'); console.log(c.github?.draft_branch || 'portfolio-drafts')")"
+          set -euo pipefail
+          base="${GITHUB_SHA}"
+          mkdir -p "$RUNNER_TEMP/portfolio-drafts"
+          node -e 'const fs=require("fs"); for (const d of JSON.parse(fs.readFileSync("sync-result.json")).drafts) { fs.copyFileSync(d.draftFile, process.env.RUNNER_TEMP+"/portfolio-drafts/"+d.id+".json"); }'
+          while IFS=$'\t' read -r id repo_name repo_url readme_url summary branch; do
+            [ -n "$id" ] || continue
+            git checkout -B "$branch" "$base"
+            mkdir -p data/drafts
+            cp "$RUNNER_TEMP/portfolio-drafts/$id.json" "data/drafts/$id.json"
+            npx tsx scripts/promote-draft.ts "data/drafts/$id.json"
+            git config user.name "portfolio-sync[bot]"
+            git config user.email "portfolio-sync[bot]@users.noreply.github.com"
+            git add "data/projects.json" "data/drafts/$id.json"
+            test "$(git diff --cached --name-only | sort | tr '\n' ' ')" = "data/drafts/$id.json data/projects.json "
+            git commit -m "chore: approve portfolio draft $repo_name"
+            git push --force-with-lease origin "HEAD:$branch"
+            body="$(printf '%s\n\nRepository: %s\nREADME: %s' "$summary" "$repo_url" "$readme_url")"
+            number="$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')"
+            if [ -n "$number" ]; then
+              gh pr edit "$number" --title "Portfolio draft: $repo_name" --body "$body"
+            else
+              gh pr create --base main --head "$branch" --title "Portfolio draft: $repo_name" --body "$body"
+            fi
+          done < <(node -e 'for (const d of JSON.parse(require("fs").readFileSync("sync-result.json")).drafts) console.log([d.id,d.repoName,d.repoUrl,d.readmeUrl,d.summary,d.branch].join("\t"))')
+      - name: Create or update aggregate cleanup PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          count="$(node -e 'console.log(JSON.parse(require("fs").readFileSync("sync-result.json")).cleanup.length)')"
+          [ "$count" -gt 0 ] || exit 0
+          branch="portfolio/sync-log"
+          git checkout -B "$branch" "${GITHUB_SHA}"
+          node -e 'const fs=require("fs"); const p="data/projects.json"; const r=JSON.parse(fs.readFileSync("sync-result.json")); const ids=new Set(r.cleanup.map(x=>x.id)); const projects=JSON.parse(fs.readFileSync(p)); fs.writeFileSync(p, JSON.stringify(projects.filter(x=>!ids.has(x.id)).sort((a,b)=>a.id.localeCompare(b.id)),null,2)+"\n")'
           git config user.name "portfolio-sync[bot]"
           git config user.email "portfolio-sync[bot]@users.noreply.github.com"
-          git checkout -B "$branch"
-          git add data/projects.json data/drafts
-          git commit -m "chore: sync portfolio drafts"
+          git add data/projects.json
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: remove opted-out portfolio projects"
           git push --force-with-lease origin "HEAD:$branch"
-          gh pr list --head "$branch" --state open --json number --jq '.[0].number' | grep -q . || gh pr create --base "${{ github.ref_name }}" --head "$branch" --title "Portfolio draft: sync" --body "Review generated drafts before approval."
+          title="$(node -e 'const r=JSON.parse(require("fs").readFileSync("sync-result.json")).cleanup; console.log(r.length===1 ? `Portfolio: remove ${r[0].repoName} (repo no longer opted in)` : "Portfolio: remove opted-out repositories")')"
+          body="$(node -e 'const r=JSON.parse(require("fs").readFileSync("sync-result.json")).cleanup; console.log(r.map(x=>`- ${x.sourceRepo}: ${x.reason}`).join("\n"))')"
+          number="$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')"
+          if [ -n "$number" ]; then gh pr edit "$number" --title "$title" --body "$body"; else gh pr create --base main --head "$branch" --title "$title" --body "$body"; fi

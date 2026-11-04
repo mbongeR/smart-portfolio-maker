@@ -3,6 +3,7 @@
   "include_forks": false,
   "include_archived": false,
   "template": "default",
+  "readme_max_tokens": 8000,
   "llm": {
     "provider": "ollama",
     "model": "llama3.2",

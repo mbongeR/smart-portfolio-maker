@@ -10,3 +10,5 @@ Detected project files and stack:
 
 Sanitized README:
 {{readme}}
+
+Write the output in the configured language instruction supplied by the caller.

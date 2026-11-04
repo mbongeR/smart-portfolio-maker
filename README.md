@@ -17,7 +17,8 @@ private-by-default public site.
 - Removes common secrets before README content is sent to an LLM.
 - Supports Gemini, OpenAI, and Ollama-compatible providers through configuration.
 - Validates LLM responses with Zod.
-- Creates draft files and opens a review pull request.
+- Creates one approval pull request per repository. Merging approves the project;
+  closing the PR discards it.
 - Renders only approved entries from `data/projects.json`.
 - Deploys the static Next.js site to GitHub Pages.
 
@@ -92,14 +93,23 @@ drafts or create a diff.
 
 ### 4. Review and approve
 
-The sync workflow commits changes to the configured draft branch and opens a pull
-request. Review the generated files in `data/drafts/`.
+The sync workflow commits each candidate to
+`portfolio/draft-<repo-name>` and opens a separate pull request titled
+`Portfolio draft: <repo-name>`. Each approval PR contains exactly two changes:
+the project is added to `data/projects.json` and its draft is deleted from
+`data/drafts/`. The PR body includes the generated summary, repository URL, and
+README URL.
 
 The static `/admin` page provides GitHub edit and delete links. Because GitHub Pages
 is static, it does not hold a write token and cannot mutate the repository directly.
-To approve an entry, review the draft, copy the validated content into
-`data/projects.json`, remove the draft, and merge the pull request. Only entries in
+To approve an entry, review and merge its approval PR. To discard it, close the
+PR without merging. If the source README changes before merge, the same branch and
+open PR are force-updated rather than duplicated. Only entries in
 `data/projects.json` are displayed publicly.
+
+If repositories are deleted, archived, or lose the configured topic, the workflow
+opens a separate aggregate cleanup PR that removes their approved entries. It
+never auto-merges cleanup changes.
 
 ## Local development
 
@@ -109,6 +119,7 @@ npm run test      # Run Vitest tests
 npm run typecheck # Run TypeScript checks
 npm run lint      # Run ESLint
 npm run build     # Build the static export in out/
+npm run e2e       # Optional real GitHub/Ollama smoke test (requires credentials)
 ```
 
 Open `http://localhost:3000` for the portfolio and
@@ -117,10 +128,21 @@ Open `http://localhost:3000` for the portfolio and
 Set `NEXT_PUBLIC_REPOSITORY=owner/repository` in `.env` to enable the admin page's
 GitHub links.
 
+The E2E smoke test uses `mbongeR/MbongeRedeem-portfolio` as its positive fixture
+and discovers one fork and one archived repository without modifying them:
+
+```powershell
+$env:PORTFOLIO_GITHUB_TOKEN = "<fine-grained-token>"
+$env:OLLAMA_BASE_URL = "http://localhost:11434/v1"
+$env:E2E_PROVIDER = "ollama"
+npm run e2e
+```
+
 ## GitHub Actions
 
 - [`sync.yml`](./.github/workflows/sync.yml) runs daily, manually, or when
-  `portfolio.config.json` changes. It creates a draft branch and pull request.
+  `portfolio.config.json` changes. It creates per-repository approval PRs and an
+  optional aggregate cleanup PR.
 - [`deploy.yml`](./.github/workflows/deploy.yml) builds the static export and deploys
   it to GitHub Pages.
 
@@ -151,6 +173,9 @@ tests/               Filtering, parsing, sanitization, extraction, and idempoten
 ## Known limitations
 
 - Approval is a human GitHub workflow, not an in-browser mutation.
+- Repositories without a README are logged and skipped.
+- README input is limited to 8,000 approximate whitespace tokens by default;
+  configure `readme_max_tokens` to change it.
 - A GitHub-hosted runner cannot access a local Ollama server without a reachable
   network endpoint or self-hosted runner.
 - The first version ships one default visual template; the config field is reserved

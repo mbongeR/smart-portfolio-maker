@@ -6,13 +6,17 @@ export function createGithubClient(token = process.env.PORTFOLIO_GITHUB_TOKEN): 
 }
 
 export async function collectRepository(client: Octokit, owner: string, repo: string) {
-  const [{ data: metadata }, { data: readme }, { data: languages }, { data: commits }] = await Promise.all([
+  const [{ data: metadata }, readmeResult, { data: languages }, { data: commits }] = await Promise.all([
     client.repos.get({ owner, repo }),
-    client.repos.getReadme({ owner, repo, mediaType: { format: "raw" } }),
+    client.repos.getReadme({ owner, repo, mediaType: { format: "raw" } }).catch((error: unknown) => {
+      if ((error as { status?: number }).status === 404) return null;
+      throw error;
+    }),
     client.repos.listLanguages({ owner, repo }),
     client.repos.listCommits({ owner, repo, per_page: 1 }),
   ]);
-  const content = typeof readme === "string" ? readme : Buffer.from(readme.content, "base64").toString("utf8");
+  const readme = readmeResult?.data;
+  const content = readme === undefined || readme === null ? null : typeof readme === "string" ? readme : Buffer.from(readme.content, "base64").toString("utf8");
   const rootFiles = await Promise.all(["package.json", "pyproject.toml", "go.mod"].map(async (path) => {
     try {
       const result = await client.repos.getContent({ owner, repo, path, ref: metadata.default_branch });
@@ -25,6 +29,7 @@ export async function collectRepository(client: Octokit, owner: string, repo: st
   return {
     metadata,
     readme: content,
+    readmeUrl: `https://github.com/${owner}/${repo}/blob/${metadata.default_branch}/README.md`,
     languages: Object.keys(languages),
     lastCommit: commits[0]?.commit.author?.date ?? null,
     files: Object.fromEntries(rootFiles),

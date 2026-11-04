@@ -15,7 +15,10 @@ export async function extractProject(input: {
   const prompt = template
     .replace("{{repository_metadata}}", JSON.stringify(input.repositoryMetadata, null, 2))
     .replace("{{detected_stack}}", input.detectedStack.join(", "))
-    .replace("{{readme}}", input.readme);
+    .replace("{{readme}}", input.readme)
+    .concat(input.config.output_language
+      ? `\n\nWrite the output in ${input.config.output_language}.`
+      : "\n\nWrite the output in English unless the configuration specifies another output language.");
   const model = createModel(input.config);
   const result = await generateObject({ model, schema: ExtractionSchema, prompt });
   return ExtractionSchema.parse(result.object);
