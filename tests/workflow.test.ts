@@ -11,6 +11,8 @@ describe("sync workflow safeguards", () => {
     expect(workflow).toContain("needs: preflight");
     expect(workflow).toContain("if: needs.preflight.outputs.configured == 'true'");
     expect(workflow).toContain("npm --silent run sync > sync-result.json");
+    expect(workflow).toContain("[d.id,d.branch].join");
+    expect(workflow).toContain('d.repoUrl ?? ""');
     expect(workflow).not.toMatch(/^\s+pull_request:/m);
   });
 });

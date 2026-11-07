@@ -13,7 +13,7 @@ export type SyncDraft = {
   id: string;
   repoName: string;
   sourceRepo: string;
-  repoUrl: string;
+  repoUrl: string | null;
   readmeUrl: string | null;
   summary: string;
   branch: string;
@@ -107,7 +107,7 @@ export async function runSync(dependencies: SyncDependencies): Promise<SyncResul
     }));
     await writeDraftIfChanged(draftFile, draft);
     drafts.push({
-      id, repoName: repo.name, sourceRepo, repoUrl: repo.html_url, readmeUrl: collected.readmeUrl,
+      id, repoName: repo.name, sourceRepo, repoUrl: repo.private ? null : repo.html_url, readmeUrl: collected.readmeUrl,
       summary: extraction.one_liner, branch: `portfolio/draft-${repo.name}`, draftFile,
     });
   }
