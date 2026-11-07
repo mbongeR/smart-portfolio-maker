@@ -12,7 +12,27 @@ permissions:
   pull-requests: write
 
 jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.credentials.outputs.configured }}
+    steps:
+      - id: credentials
+        name: Check required credentials
+        shell: bash
+        run: echo "configured=${{ secrets.PORTFOLIO_GITHUB_TOKEN != '' }}" >> "$GITHUB_OUTPUT"
+      - name: Fail clearly for manual runs without credentials
+        if: steps.credentials.outputs.configured != 'true' && github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          echo "::error::PORTFOLIO_GITHUB_TOKEN is not configured. See README#setup."
+          exit 1
+      - name: Skip scheduled or push sync without credentials
+        if: steps.credentials.outputs.configured != 'true' && github.event_name != 'workflow_dispatch'
+        run: echo "::notice::Skipping sync — PORTFOLIO_GITHUB_TOKEN not configured. See README#setup."
   sync:
+    needs: preflight
+    if: needs.preflight.outputs.configured == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +41,7 @@ jobs:
         with: { node-version: 22, cache: npm }
       - run: npm ci
       - name: Generate drafts and cleanup records
-        run: npm run sync > sync-result.json
+        run: npm --silent run sync > sync-result.json
         env:
           PORTFOLIO_GITHUB_TOKEN: ${{ secrets.PORTFOLIO_GITHUB_TOKEN }}
           GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}

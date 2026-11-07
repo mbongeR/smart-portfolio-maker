@@ -22,6 +22,25 @@ private-by-default public site.
 - Renders only approved entries from `data/projects.json`.
 - Deploys the static Next.js site to GitHub Pages.
 
+## Setup
+
+GitHub Actions requires these repository secrets:
+
+- `PORTFOLIO_GITHUB_TOKEN`: a fine-grained GitHub PAT with **Contents: Read** and
+  **Metadata: Read** permissions, granted only to the selected repositories being
+  scanned.
+- `GROQ_API_KEY`: the Groq API key used by the default configuration.
+
+Set them without putting their values in the repository:
+
+```bash
+gh secret set PORTFOLIO_GITHUB_TOKEN --repo mbongeR/smart-portfolio-maker
+gh secret set GROQ_API_KEY --repo mbongeR/smart-portfolio-maker
+```
+
+The sync workflow skips scheduled and push runs when the GitHub token is absent.
+Manual runs fail with a setup message instead. Never commit `.env` or secret values.
+
 ## Quick start
 
 ### 1. Install
