@@ -6,9 +6,9 @@ export function createGithubClient(token = process.env.PORTFOLIO_GITHUB_TOKEN): 
 }
 
 export async function collectRepository(client: Octokit, owner: string, repo: string) {
-  const [{ data: metadata }, readmeResult, { data: languages }, { data: commits }] = await Promise.all([
-    client.repos.get({ owner, repo }),
-    client.repos.getReadme({ owner, repo, mediaType: { format: "raw" } }).catch((error: unknown) => {
+  const { data: metadata } = await client.repos.get({ owner, repo });
+  const [readmeResult, { data: languages }, { data: commits }] = await Promise.all([
+    metadata.private ? Promise.resolve(null) : client.repos.getReadme({ owner, repo, mediaType: { format: "raw" } }).catch((error: unknown) => {
       if ((error as { status?: number }).status === 404) return null;
       throw error;
     }),
@@ -29,7 +29,7 @@ export async function collectRepository(client: Octokit, owner: string, repo: st
   return {
     metadata,
     readme: content,
-    readmeUrl: `https://github.com/${owner}/${repo}/blob/${metadata.default_branch}/README.md`,
+    readmeUrl: metadata.private ? null : `https://github.com/${owner}/${repo}/blob/${metadata.default_branch}/README.md`,
     languages: Object.keys(languages),
     lastCommit: commits[0]?.commit.author?.date ?? null,
     files: Object.fromEntries(rootFiles),

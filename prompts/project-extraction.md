@@ -9,6 +9,9 @@ The JSON object must contain exactly these fields:
 - stack: an array of technologies evidenced by the repository
 - highlights: an array of concise evidence-based project highlights
 - demo_url: a supported demo URL, or null
+If the repository metadata says private is true, use only the supplied metadata and
+detected stack. Do not infer proprietary features, customers, metrics, or business
+details; keep the description high-level and suitable for public publication.
 
 Repository metadata:
 {{repository_metadata}}

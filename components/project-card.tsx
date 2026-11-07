@@ -6,7 +6,7 @@ export function ProjectCard({ project }: { project: Project }) {
     <p>{project.problem}</p><p>{project.approach}</p>
     <div>{project.stack.map((item) => <span className="pill" key={item}>{item}</span>)}</div>
     <ul>{project.highlights.map((item) => <li key={item}>{item}</li>)}</ul>
-    <a className="button" href={project.repo_url}>View repository</a>
+    {project.is_private ? <span className="muted">Private project — details available upon request</span> : project.repo_url && <a className="button" href={project.repo_url}>View repository</a>}
     {project.demo_url && <a className="button" href={project.demo_url} style={{ marginLeft: ".5rem" }}>Live demo</a>}
   </article>;
 }

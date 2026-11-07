@@ -14,7 +14,7 @@ export type SyncDraft = {
   repoName: string;
   sourceRepo: string;
   repoUrl: string;
-  readmeUrl: string;
+  readmeUrl: string | null;
   summary: string;
   branch: string;
   draftFile: string;
@@ -30,7 +30,7 @@ export type CleanupRecord = {
 export type RepositoryCollector = (client: unknown, owner: string, repo: string) => Promise<{
   metadata: Repo;
   readme: string | null;
-  readmeUrl: string;
+  readmeUrl: string | null;
   languages: string[];
   lastCommit: string | null;
   files: Record<string, string>;
@@ -81,7 +81,7 @@ export async function runSync(dependencies: SyncDependencies): Promise<SyncResul
     const sourceRepo = `${owner}/${repo.name}`;
     const id = sourceRepo.replace(/[^A-Za-z0-9._-]/g, "-");
     const sourceSha = (await octokit.repos.getBranch({ owner, repo: repo.name, branch: repo.default_branch })).data.commit.sha;
-    if (!collected.readme?.trim()) {
+    if (!repo.private && !collected.readme?.trim()) {
       const reason = `Skipped ${sourceRepo}: README not found or empty`;
       skipped.push(reason);
       logger(reason);
@@ -97,13 +97,13 @@ export async function runSync(dependencies: SyncDependencies): Promise<SyncResul
     if (existingDraft?.source_sha === sourceSha) continue;
     const extraction = await dependencies.extract({
       config,
-      repositoryMetadata: { name: repo.name, description: repo.description, homepage: repo.homepage, license: repo.license?.spdx_id },
+      repositoryMetadata: { name: repo.name, description: repo.description, homepage: repo.homepage, license: repo.license?.spdx_id, private: repo.private ?? false },
       detectedStack: detectStack(collected.files),
-      readme: truncateToTokens(sanitizeReadme(collected.readme), config.readme_max_tokens),
+      readme: truncateToTokens(sanitizeReadme(collected.readme ?? ""), config.readme_max_tokens),
     });
     const draft: Draft = DraftSchema.parse(createDraft({
       id, sourceRepo, sourceSha, generatedAt: now(), extraction,
-      source: { repo_url: repo.html_url, homepage: repo.homepage || null, license: repo.license?.spdx_id || null, topics: repo.topics ?? [], languages: collected.languages, last_commit_at: collected.lastCommit },
+      source: { repo_url: repo.private ? null : repo.html_url, homepage: repo.homepage || null, license: repo.license?.spdx_id || null, is_private: repo.private ?? false, topics: repo.topics ?? [], languages: collected.languages, last_commit_at: collected.lastCommit },
     }));
     await writeDraftIfChanged(draftFile, draft);
     drafts.push({

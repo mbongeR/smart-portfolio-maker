@@ -15,6 +15,7 @@ const project = ProjectSchema.parse({
   source_repo: draft.source_repo,
   source_sha: draft.source_sha,
   repo_url: draft.source.repo_url,
+  is_private: draft.source.is_private,
   homepage: draft.source.homepage,
   license: draft.source.license,
   updated_at: timestamp,

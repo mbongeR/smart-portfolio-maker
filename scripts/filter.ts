@@ -9,6 +9,7 @@ export type Repo = {
   topics?: string[];
   fork?: boolean;
   archived?: boolean;
+  private?: boolean;
 };
 
 export function filterRepositories(

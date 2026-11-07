@@ -23,7 +23,7 @@ export function createDraft(input: {
   sourceSha: string;
   generatedAt: string;
   extraction: Extraction;
-  source: Draft["source"];
+  source: Omit<Draft["source"], "is_private"> & { is_private?: boolean };
 }): Draft {
   return {
     id: input.id,
@@ -32,6 +32,6 @@ export function createDraft(input: {
     generated_at: input.generatedAt,
     status: "draft",
     project: input.extraction,
-    source: input.source,
+    source: { ...input.source, is_private: input.source.is_private ?? false },
   };
 }

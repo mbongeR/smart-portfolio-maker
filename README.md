@@ -15,10 +15,14 @@ private-by-default public site.
 - Reads README content, languages, topics, homepage, license, and latest commit.
 - Detects stack information from `package.json`, `pyproject.toml`, and `go.mod`.
 - Removes common secrets before README content is sent to an LLM.
+- Handles private tagged repositories without sending their README to the LLM;
+  published entries hide private repository links and are labeled as private.
 - Supports Gemini, OpenAI, and Ollama-compatible providers through configuration.
 - Validates LLM responses with Zod.
 - Creates one approval pull request per repository. Merging approves the project;
   closing the PR discards it.
+- Review and edit generated project content in the approval PR before merging;
+  the static site never receives a write-capable GitHub token.
 - Renders only approved entries from `data/projects.json`.
 - Deploys the static Next.js site to GitHub Pages.
 
@@ -144,6 +148,9 @@ npm run e2e       # Optional real GitHub/Ollama smoke test (requires credentials
 
 Open `http://localhost:3000` for the portfolio and
 `http://localhost:3000/admin` for draft review.
+
+For the deployed project site, use:
+`https://mbongeR.github.io/smart-portfolio-maker/`
 
 Set `NEXT_PUBLIC_REPOSITORY=owner/repository` in `.env` to enable the admin page's
 GitHub links.

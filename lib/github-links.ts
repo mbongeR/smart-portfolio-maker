@@ -7,3 +7,8 @@ export function githubDeleteUrl(repo: string, filePath: string): string {
   const [owner, name] = repo.split("/");
   return `https://github.com/${encodeURIComponent(owner)}/${encodeURIComponent(name)}/delete/main/${filePath.split("/").map(encodeURIComponent).join("/")}`;
 }
+
+export function githubPullRequestsUrl(repo: string): string {
+  const [owner, name] = repo.split("/");
+  return `https://github.com/${encodeURIComponent(owner)}/${encodeURIComponent(name)}/pulls`;
+}
