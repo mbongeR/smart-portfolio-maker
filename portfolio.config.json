@@ -6,7 +6,7 @@
   "readme_max_tokens": 8000,
   "llm": {
     "provider": "groq",
-    "model": "llama-3.1-8b-instant",
+    "model": "openai/gpt-oss-20b",
     "prompt_file": "prompts/project-extraction.md"
   },
   "github": {
