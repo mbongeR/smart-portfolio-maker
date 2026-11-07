@@ -26,6 +26,7 @@ describe("LLM extraction contract", () => {
   it("adds the default English instruction to the provider prompt", async () => {
     generateObjectMock.mockImplementationOnce(async ({ schema, prompt }) => {
       expect(prompt).toContain("Write the output in English");
+      expect(prompt).toContain("JSON object");
       return { object: schema.parse({ title: "Demo", one_liner: "A demo", problem: "A problem", approach: "An approach", stack: ["TypeScript"], highlights: ["Fast"], demo_url: null }) };
     });
     await extractProject(input);
