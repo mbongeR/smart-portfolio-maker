@@ -11,7 +11,7 @@ if (!token) throw new Error("Set PORTFOLIO_GITHUB_TOKEN before running the E2E c
 const provider = process.env.E2E_PROVIDER ?? "ollama";
 const root = process.cwd();
 const config = PortfolioConfigSchema.parse(JSON.parse(await readFile(path.join(root, "portfolio.config.json"), "utf8")));
-const e2eConfig = { ...config, llm: { ...config.llm, provider: provider as "ollama" | "gemini" | "openai" } };
+const e2eConfig = { ...config, llm: { ...config.llm, provider: provider as "ollama" | "gemini" | "groq" | "openai" } };
 const client = createGithubClient(token);
 const { data: viewer } = await client.users.getAuthenticated();
 const { data: repositories } = await client.repos.listForAuthenticatedUser({ per_page: 100, affiliation: "owner" });

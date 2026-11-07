@@ -49,7 +49,7 @@ export const PortfolioConfigSchema = z.object({
   readme_max_tokens: z.number().int().positive().default(8000),
   output_language: text.optional(),
   llm: z.object({
-    provider: z.enum(["gemini", "ollama", "openai"]),
+    provider: z.enum(["gemini", "groq", "ollama", "openai"]),
     model: text,
     base_url: url.optional(),
     prompt_file: text.default("prompts/project-extraction.md"),

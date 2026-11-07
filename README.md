@@ -74,6 +74,7 @@ Supported providers:
 | --- | --- |
 | `ollama` | `base_url` or `OLLAMA_BASE_URL`, plus a reachable Ollama model |
 | `gemini` | `GOOGLE_GENERATIVE_AI_API_KEY` and a Gemini model |
+| `groq` | `GROQ_API_KEY` and a Groq model |
 | `openai` | `OPENAI_API_KEY` and an OpenAI model |
 
 For GitHub Actions, add the provider credentials and

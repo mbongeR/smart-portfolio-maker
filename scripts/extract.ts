@@ -33,6 +33,14 @@ function createModel(config: PortfolioConfig) {
     const openai = createOpenAI({ baseURL: config.llm.base_url });
     return openai(config.llm.model);
   }
+  if (config.llm.provider === "groq") {
+    const groq = createOpenAICompatible({
+      name: "groq",
+      apiKey: process.env.GROQ_API_KEY,
+      baseURL: config.llm.base_url ?? "https://api.groq.com/openai/v1",
+    });
+    return groq(config.llm.model);
+  }
   const ollama = createOpenAICompatible({
     name: "ollama",
     baseURL: config.llm.base_url ?? process.env.OLLAMA_BASE_URL ?? "http://localhost:11434/v1",

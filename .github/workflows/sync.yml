@@ -26,6 +26,7 @@ jobs:
           PORTFOLIO_GITHUB_TOKEN: ${{ secrets.PORTFOLIO_GITHUB_TOKEN }}
           GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           OLLAMA_BASE_URL: ${{ secrets.OLLAMA_BASE_URL }}
       - name: Create or update one approval PR per draft
         env:
