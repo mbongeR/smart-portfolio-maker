@@ -1,5 +1,23 @@
 [
   {
+    "title": "fitXI",
+    "one_liner": "Player load monitoring for football clubs in Zimbabwe and southern Africa.",
+    "problem": "Lack of efficient player load monitoring tools in Zimbabwe and southern Africa football clubs.",
+    "approach": "Provides a system to collect, analyze, and track player load data.",
+    "stack": [],
+    "highlights": [],
+    "demo_url": null,
+    "id": "mbongeR-fitXI",
+    "source_repo": "mbongeR/fitXI",
+    "source_sha": "2b636f7133b8c87b3431bb90caf46344ca122a07",
+    "repo_url": null,
+    "is_private": true,
+    "homepage": null,
+    "license": null,
+    "updated_at": "2026-11-07T10:32:38.256Z",
+    "approved_at": "2026-11-07T10:32:38.256Z"
+  },
+  {
     "title": "MbongeRedeem Portfolio",
     "one_liner": "A clean, minimalist portfolio template for Backend Engineers, built with Next.js 14 and Tailwind CSS.",
     "problem": "Backend engineers need a professional portfolio to showcase technical maturity, system architecture, and infrastructure skills.",
@@ -32,6 +50,7 @@
     "source_repo": "mbongeR/MbongeRedeem-portfolio",
     "source_sha": "7639096986b750d765af92a32ff335cade481a29",
     "repo_url": "https://github.com/mbongeR/MbongeRedeem-portfolio",
+    "is_private": false,
     "homepage": "https://mbonge-redeem-portfolio.vercel.app",
     "license": null,
     "updated_at": "2026-11-07T09:30:13.187Z",
