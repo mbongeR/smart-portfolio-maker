@@ -13,20 +13,36 @@ describe("LLM extraction contract", () => {
     readme: "A demo",
   };
 
-  it("accepts a provider-shaped result after generateObject enforces the Zod schema", async () => {
+  it("normalizes the canonical provider result", async () => {
     generateObjectMock.mockImplementationOnce(async ({ schema }) => ({ object: schema.parse({ title: "Demo", one_liner: "A demo", problem: "A problem", approach: "An approach", stack: ["TypeScript"], highlights: ["Fast"], demo_url: null }) }));
     await expect(extractProject(input)).resolves.toMatchObject({ title: "Demo", stack: ["TypeScript"] });
   });
 
-  it("rejects malformed provider output", async () => {
-    generateObjectMock.mockImplementationOnce(async ({ schema }) => ({ object: schema.parse({ title: "Missing required fields" }) }));
-    await expect(extractProject(input)).rejects.toThrow();
+  it("normalizes common aliases and repository evidence", async () => {
+    generateObjectMock.mockImplementationOnce(async ({ schema }) => ({ object: schema.parse({
+      name: "Alias project",
+      description: "A project summary",
+      technologies: ["TypeScript"],
+      features: ["Evidence-based feature"],
+      demoUrl: "https://example.com",
+    }) }));
+    await expect(extractProject(input)).resolves.toMatchObject({
+      title: "Alias project",
+      one_liner: "A project summary",
+      problem: "A project summary",
+      approach: "A project summary",
+      stack: ["TypeScript"],
+      highlights: ["Evidence-based feature"],
+      demo_url: "https://example.com/",
+    });
   });
 
   it("adds the default English instruction to the provider prompt", async () => {
     generateObjectMock.mockImplementationOnce(async ({ schema, prompt }) => {
       expect(prompt).toContain("Write the output in English");
       expect(prompt).toContain("JSON object");
+      expect(prompt).toContain("title: a concise project name");
+      expect(prompt).toContain("highlights: an array of concise evidence-based project highlights");
       return { object: schema.parse({ title: "Demo", one_liner: "A demo", problem: "A problem", approach: "An approach", stack: ["TypeScript"], highlights: ["Fast"], demo_url: null }) };
     });
     await extractProject(input);
