@@ -1,15 +1,32 @@
 [
   {
     "title": "fitXI",
-    "one_liner": "Player load monitoring for football clubs in Zimbabwe and southern Africa.",
-    "problem": "Lack of efficient player load monitoring tools in Zimbabwe and southern Africa football clubs.",
-    "approach": "Provides a system to collect, analyze, and track player load data.",
-    "stack": [],
-    "highlights": [],
+    "one_liner": "An offline-first player load and wellness monitoring PWA for football clubs in Zimbabwe and southern Africa.",
+    "problem": "Many clubs lack affordable tools to consistently track training load and player wellness.",
+    "approach": "Combines session RPE and daily wellness check-ins with offline logging, background sync, dashboards, and transparent traffic-light indicators.",
+    "stack": [
+      "React",
+      "Vite",
+      "TypeScript",
+      "React Router",
+      "Tailwind CSS",
+      "Dexie.js",
+      "vite-plugin-pwa",
+      "Supabase",
+      "Chart.js"
+    ],
+    "highlights": [
+      "Designed for offline use on affordable Android devices",
+      "Tracks session RPE, training load, sleep, soreness, and mood",
+      "Uses transparent rule-based load and wellness indicators",
+      "Supports background synchronization after connectivity returns",
+      "Includes CSV export for clubs and federations",
+      "Designed with consent, club isolation, and minimal data collection"
+    ],
     "demo_url": null,
     "id": "mbongeR-fitXI",
     "source_repo": "mbongeR/fitXI",
-    "source_sha": "2b636f7133b8c87b3431bb90caf46344ca122a07",
+    "source_sha": "2b636f7133b8c87b3431bb90caf46344ca12207",
     "repo_url": null,
     "is_private": true,
     "homepage": null,
@@ -21,7 +38,7 @@
     "title": "MbongeRedeem Portfolio",
     "one_liner": "A clean, minimalist portfolio template for Backend Engineers, built with Next.js 14 and Tailwind CSS.",
     "problem": "Backend engineers need a professional portfolio to showcase technical maturity, system architecture, and infrastructure skills.",
-    "approach": "Provides a ready‑to‑use, dark‑mode‑first Next.js 14 app with Tailwind CSS, Lucide React icons, and JetBrains Mono typography, allowing easy content customization.",
+    "approach": "Provides a ready-to-use, dark-mode-first Next.js 14 app with Tailwind CSS, Lucide React icons, and JetBrains Mono typography, allowing easy content customization.",
     "stack": [
       "@types/node",
       "@types/react",
