@@ -35,10 +35,10 @@
     "approved_at": "2026-11-07T10:32:38.256Z"
   },
   {
-    "title": "MbongeRedeem Portfolio",
-    "one_liner": "A clean, minimalist portfolio template for Backend Engineers, built with Next.js 14 and Tailwind CSS.",
-    "problem": "Backend engineers need a professional portfolio to showcase technical maturity, system architecture, and infrastructure skills.",
-    "approach": "Provides a ready-to-use, dark-mode-first Next.js 14 app with Tailwind CSS, Lucide React icons, and JetBrains Mono typography, allowing easy content customization.",
+    "title": "Mbonge Redeem Portfolio",
+    "one_liner": "A personal portfolio built with Next.js, TypeScript, Tailwind CSS, and Lucide icons that showcases backend engineering projects and links to their source code.",
+    "problem": "Communicating technical expertise and project portfolio to potential employers and collaborators.",
+    "approach": "Employs a server‑rendered Next.js site with typed React components, Tailwind styling, and integrated icons to present project summaries and direct links to public GitHub repositories.",
     "stack": [
       "@types/node",
       "@types/react",
@@ -56,21 +56,22 @@
       "typescript"
     ],
     "highlights": [
-      "Next.js 14 App Router structure",
-      "Dark mode first Tailwind CSS styling",
-      "Lucide React icon integration",
-      "JetBrains Mono typography",
-      "Deployable via Vercel with minimal setup"
+      "Next.js 14 App Router for optimal routing",
+      "Tailwind CSS with animate plugin for responsive UI",
+      "Lucide React icons for clear visual cues",
+      "TypeScript for type safety across components",
+      "ESLint and PostCSS configured for code quality",
+      "Automated build & deployment on Vercel"
     ],
     "demo_url": "https://mbonge-redeem-portfolio.vercel.app/",
     "id": "mbongeR-MbongeRedeem-portfolio",
     "source_repo": "mbongeR/MbongeRedeem-portfolio",
-    "source_sha": "7639096986b750d765af92a32ff335cade481a29",
+    "source_sha": "f70afa06f3c63c746d84fc13db67ab11fd92726d",
     "repo_url": "https://github.com/mbongeR/MbongeRedeem-portfolio",
     "is_private": false,
     "homepage": "https://mbonge-redeem-portfolio.vercel.app",
     "license": null,
-    "updated_at": "2026-11-07T09:30:13.187Z",
-    "approved_at": "2026-11-07T09:30:13.187Z"
+    "updated_at": "2026-11-14T09:03:28.762Z",
+    "approved_at": "2026-11-14T09:03:28.762Z"
   }
 ]
