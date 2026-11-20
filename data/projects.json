@@ -35,42 +35,40 @@
     "approved_at": "2026-11-07T10:32:38.256Z"
   },
   {
-    "title": "MbongeRedeem Portfolio",
-    "one_liner": "A clean, minimalist portfolio template for Backend Engineers, built with Next.js 14 and Tailwind CSS.",
-    "problem": "Backend engineers need a professional portfolio to showcase technical maturity, system architecture, and infrastructure skills.",
-    "approach": "Provides a ready-to-use, dark-mode-first Next.js 14 app with Tailwind CSS, Lucide React icons, and JetBrains Mono typography, allowing easy content customization.",
+    "title": "Mbonge Redeem Portfolio",
+    "one_liner": "Next.js portfolio showcasing a backend engineer’s Java, Spring Boot, and data‑pipeline projects.",
+    "problem": "Backend engineers need an accessible, evidence‑based portfolio to demonstrate skills and project ownership.",
+    "approach": "Build a static site with Next.js 14 App Router, React 18, and TypeScript, styling with Tailwind CSS, and link directly to public GitHub repos for each project.",
     "stack": [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Tailwind CSS",
+      "Lucide React",
+      "PostCSS",
+      "Autoprefixer",
+      "ESLint",
+      "eslint-config-next",
       "@types/node",
       "@types/react",
       "@types/react-dom",
-      "autoprefixer",
-      "eslint",
-      "eslint-config-next",
-      "lucide-react",
-      "next",
-      "postcss",
-      "react",
-      "react-dom",
-      "tailwindcss",
-      "tailwindcss-animate",
-      "typescript"
+      "tailwindcss-animate"
     ],
     "highlights": [
-      "Next.js 14 App Router structure",
-      "Dark mode first Tailwind CSS styling",
-      "Lucide React icon integration",
-      "JetBrains Mono typography",
-      "Deployable via Vercel with minimal setup"
+      "Proof‑led design with direct links to public source repos",
+      "Deployment on Vercel with instant preview",
+      "Integration of Tailwind CSS and Lucide icons for clean UI",
+      "Use of Next.js 14 App Router for optimal performance"
     ],
     "demo_url": "https://mbonge-redeem-portfolio.vercel.app/",
     "id": "mbongeR-MbongeRedeem-portfolio",
     "source_repo": "mbongeR/MbongeRedeem-portfolio",
-    "source_sha": "7639096986b750d765af92a32ff335cade481a29",
+    "source_sha": "f70afa06f3c63c746d84fc13db67ab11fd92726d",
     "repo_url": "https://github.com/mbongeR/MbongeRedeem-portfolio",
     "is_private": false,
     "homepage": "https://mbonge-redeem-portfolio.vercel.app",
     "license": null,
-    "updated_at": "2026-11-07T09:30:13.187Z",
-    "approved_at": "2026-11-07T09:30:13.187Z"
+    "updated_at": "2026-11-20T10:07:53.682Z",
+    "approved_at": "2026-11-20T10:07:53.682Z"
   }
 ]
