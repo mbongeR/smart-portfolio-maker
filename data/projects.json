@@ -35,42 +35,41 @@
     "approved_at": "2026-11-07T10:32:38.256Z"
   },
   {
-    "title": "MbongeRedeem Portfolio",
-    "one_liner": "A clean, minimalist portfolio template for Backend Engineers, built with Next.js 14 and Tailwind CSS.",
-    "problem": "Backend engineers need a professional portfolio to showcase technical maturity, system architecture, and infrastructure skills.",
-    "approach": "Provides a ready-to-use, dark-mode-first Next.js 14 app with Tailwind CSS, Lucide React icons, and JetBrains Mono typography, allowing easy content customization.",
+    "title": "Mbonge Redeem Portfolio",
+    "one_liner": "A proof‑led personal portfolio showcasing backend engineering experience through links to public repositories.",
+    "problem": "Backend engineers often lack publicly visible, project‑backed portfolios that demonstrate their work.",
+    "approach": "Build a static site using Next.js, React, and Tailwind, featuring a curated list of repos, each linked to its source, providing direct evidence of expertise.",
     "stack": [
-      "@types/node",
-      "@types/react",
-      "@types/react-dom",
+      "next",
+      "react",
+      "typescript",
+      "tailwindcss",
+      "lucide-react",
       "autoprefixer",
       "eslint",
       "eslint-config-next",
-      "lucide-react",
-      "next",
       "postcss",
-      "react",
-      "react-dom",
-      "tailwindcss",
       "tailwindcss-animate",
-      "typescript"
+      "@types/node",
+      "@types/react",
+      "@types/react-dom"
     ],
     "highlights": [
-      "Next.js 14 App Router structure",
-      "Dark mode first Tailwind CSS styling",
-      "Lucide React icon integration",
-      "JetBrains Mono typography",
-      "Deployable via Vercel with minimal setup"
+      "Proof‑led design linking directly to public repositories",
+      "Deploys on Vercel with automated builds",
+      "Utilizes Next.js 14 App Router for server‑side rendering and routing",
+      "Styled with Tailwind CSS and lucide-react icons",
+      "TypeScript used for type safety across the site"
     ],
     "demo_url": "https://mbonge-redeem-portfolio.vercel.app/",
     "id": "mbongeR-MbongeRedeem-portfolio",
     "source_repo": "mbongeR/MbongeRedeem-portfolio",
-    "source_sha": "7639096986b750d765af92a32ff335cade481a29",
+    "source_sha": "f70afa06f3c63c746d84fc13db67ab11fd92726d",
     "repo_url": "https://github.com/mbongeR/MbongeRedeem-portfolio",
     "is_private": false,
     "homepage": "https://mbonge-redeem-portfolio.vercel.app",
     "license": null,
-    "updated_at": "2026-11-07T09:30:13.187Z",
-    "approved_at": "2026-11-07T09:30:13.187Z"
+    "updated_at": "2026-11-21T09:55:48.095Z",
+    "approved_at": "2026-11-21T09:55:48.095Z"
   }
 ]
