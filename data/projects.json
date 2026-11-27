@@ -35,10 +35,10 @@
     "approved_at": "2026-11-07T10:32:38.256Z"
   },
   {
-    "title": "MbongeRedeem Portfolio",
-    "one_liner": "A clean, minimalist portfolio template for Backend Engineers, built with Next.js 14 and Tailwind CSS.",
-    "problem": "Backend engineers need a professional portfolio to showcase technical maturity, system architecture, and infrastructure skills.",
-    "approach": "Provides a ready-to-use, dark-mode-first Next.js 14 app with Tailwind CSS, Lucide React icons, and JetBrains Mono typography, allowing easy content customization.",
+    "title": "Mbonge Redeem Portfolio",
+    "one_liner": "A Next.js portfolio that showcases Mbonge Redeem's backend engineering work with links to live projects.",
+    "problem": "Showcasing backend engineering experience and projects to potential employers and collaborators.",
+    "approach": "Built a proof‑led portfolio using Next.js 14 App Router, React, and TypeScript, linking directly to public GitHub repositories of key projects.",
     "stack": [
       "@types/node",
       "@types/react",
@@ -56,21 +56,19 @@
       "typescript"
     ],
     "highlights": [
-      "Next.js 14 App Router structure",
-      "Dark mode first Tailwind CSS styling",
-      "Lucide React icon integration",
-      "JetBrains Mono typography",
-      "Deployable via Vercel with minimal setup"
+      "Proof‑led design with direct links to public repos",
+      "Next.js 14 App Router for high performance",
+      "TypeScript‑enforced code quality and Tailwind CSS styling"
     ],
     "demo_url": "https://mbonge-redeem-portfolio.vercel.app/",
     "id": "mbongeR-MbongeRedeem-portfolio",
     "source_repo": "mbongeR/MbongeRedeem-portfolio",
-    "source_sha": "7639096986b750d765af92a32ff335cade481a29",
+    "source_sha": "f70afa06f3c63c746d84fc13db67ab11fd92726d",
     "repo_url": "https://github.com/mbongeR/MbongeRedeem-portfolio",
     "is_private": false,
     "homepage": "https://mbonge-redeem-portfolio.vercel.app",
     "license": null,
-    "updated_at": "2026-11-07T09:30:13.187Z",
-    "approved_at": "2026-11-07T09:30:13.187Z"
+    "updated_at": "2026-11-27T10:58:50.540Z",
+    "approved_at": "2026-11-27T10:58:50.540Z"
   }
 ]
